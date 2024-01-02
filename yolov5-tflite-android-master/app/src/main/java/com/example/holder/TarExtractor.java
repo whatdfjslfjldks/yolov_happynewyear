@@ -4,19 +4,21 @@ import android.util.Log;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.tensorflow.lite.support.common.FileUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
 
 import com.example.MainActivity;
 import com.example.detector.Yolov5TFLiteDetector;
+import com.example.yolov5tfliteandroid.JNITools;
 
 public class TarExtractor {
-
-    private String extension;
 
     public  void extractTar(byte[] tarFileStream, File outputDirectory) throws IOException {
 
@@ -48,8 +50,6 @@ public class TarExtractor {
             byteBuffer.put(fileBytes);
             Yolov5TFLiteDetector.modelBuffer = byteBuffer;
 
-
-
             Log.d("TarExtractor", "model extractEntry: " + Yolov5TFLiteDetector.modelBuffer.capacity());
         } else if (entry.isFile() && entry.getName().endsWith(".json")) {
             Log.d("TarExtractor", "model extractEntry: " + entry.getName());
@@ -61,10 +61,6 @@ public class TarExtractor {
             tis.read(fileBytes);
             jsonByteBuffer.put(fileBytes);
             Yolov5TFLiteDetector.jsonBuffer = jsonByteBuffer;
-
-
-
-//            MainActivity.selectedModel=true;
 
 //            Log.d("TarExtractor", "model extractEntry: " + Yolov5TFLiteDetector.modelBuffer.capacity());
         }

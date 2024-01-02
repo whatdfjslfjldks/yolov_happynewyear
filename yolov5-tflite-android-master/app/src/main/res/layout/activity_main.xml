@@ -48,27 +48,27 @@
             android:layout_marginBottom="20dp"
             android:textColor="#FFFFFF"
             android:text="inference time: " />
-<!--        <TextView-->
-<!--            android:id="@+id/track"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:text="track: " />-->
+        <TextView
+            android:id="@+id/track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF"
+            android:text="track: " />
 
-<!--        <Switch-->
-<!--            android:id="@+id/track_switch"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textOff="off"-->
-<!--            android:textOn="on"-->
-<!--            tools:ignore="UseSwitchCompatOrMaterialXml"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/track"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/track"-->
-<!--        android:layout_marginStart="5dp" />-->
+        <Switch
+            android:id="@+id/track_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="off"
+            android:textOn="on"
+            tools:ignore="UseSwitchCompatOrMaterialXml"
+            app:layout_constraintBottom_toBottomOf="@id/track"
+        app:layout_constraintLeft_toRightOf="@id/track"
+        android:layout_marginStart="5dp" />
 
 
 
@@ -154,30 +154,30 @@
             android:layout_marginBottom="5dp"
             android:textColor="#FFFFFF"
             android:text="model: " />
-<!--        <TextView-->
-<!--            android:id="@+id/border_test"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/model_name"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:text="border: " />-->
+        <TextView
+            android:id="@+id/border_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/model_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF"
+            android:text="border: " />
 
-<!--        <Switch-->
-<!--            android:id="@+id/switch_border"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textOff="off"-->
-<!--            android:textOn="on"-->
-<!--            tools:ignore="UseSwitchCompatOrMaterialXml"-->
-<!--            app:layout_constraintBottom_toTopOf="@id/model_name"-->
-<!--            app:layout_constraintLeft_toRightOf="@id/border_test"-->
-<!--        android:layout_marginStart="5dp"-->
-<!--        android:layout_marginBottom="0dp"-->
-<!--        android:layout_marginLeft="5dp"-->
-<!--        />-->
+        <Switch
+            android:id="@+id/switch_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="off"
+            android:textOn="on"
+            tools:ignore="UseSwitchCompatOrMaterialXml"
+            app:layout_constraintBottom_toTopOf="@id/model_name"
+            app:layout_constraintLeft_toRightOf="@id/border_test"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="5dp"
+        />
 
 
 

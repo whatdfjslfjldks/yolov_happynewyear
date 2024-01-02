@@ -617,6 +617,7 @@ import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.metadata.MetadataExtractor;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -632,13 +633,12 @@ import java.util.PriorityQueue;
 
 
 public class Yolov5TFLiteDetector {
-        public static ByteBuffer modelBuffer;
+    public static ByteBuffer modelBuffer;
 
     public static ByteBuffer jsonBuffer;
 
     public static ByteBuffer txtBuffer;
 
-    JNITools test = new JNITools();
     class box_t{
         public float x1, y1, x2, y2, score, label;
         public box_t(float x1, float y1, float x2, float y2, float score, float label){
@@ -683,7 +683,6 @@ public class Yolov5TFLiteDetector {
 
     public Yolov5TFLiteDetector() {
     }
-
     public String getModelFile() {
         return this.MODEL_FILE;
     }
@@ -721,46 +720,49 @@ public class Yolov5TFLiteDetector {
      *
      * @param activity
      */
-    public void initialModel(Context activity,Size inputsize,int[] outputsize) {
-        // Initialise the model
-        Final_inputSize = inputsize;
-        Final_outputSize = outputsize;
+    public void initialModel(Context activity, Size inputSize, int[] outputSize) {
+        // Initialize the model
+        Final_inputSize = inputSize;
+        Final_outputSize = outputSize;
         Log.e("test-user", "用户选择模型正常运行");
-        ByteBuffer tfliteModel = null;
-        //TODO: use cpp to read file directly. createDetector(modelPath)
 
-        // 获取模型文件的路径
-        String modelFilePath = ModelAndLabel.getInstance().getModel();
-        File modelFile = new File(modelFilePath);
         try {
-            FileInputStream fis = new FileInputStream(modelFile);
-            byte[] modelBytes = new byte[(int) modelFile.length()];
-            fis.read(modelBytes);
-            detectorPtr = test.createDetector(modelBytes, modelBytes.length);
-            Log.i("tfliteSupport", "Success reading model: " + modelFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("tfliteSupport", "Error reading model: " + e.getMessage());
+            // 获取模型ByteBuffer
+            ByteBuffer modelBuffer = Yolov5TFLiteDetector.modelBuffer;
+            if (modelBuffer != null) {
+                byte[] modelBytes = new byte[modelBuffer.remaining()];
+                modelBuffer.get(modelBytes); // 将 ByteBuffer 中的数据读取到 byte 数组中
+
+                JNITools test = new JNITools();
+                detectorPtr = test.createDetector(modelBytes, modelBytes.length);
+                Log.i("tfliteSupport", "Success reading and loading model");
+            } else {
+                Log.e("tfliteSupport", "Model ByteBuffer is null");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("aabb", "-->" + e);
-            Log.e("tfliteSupport", "Error reading model: ===>" + e);
+            Log.e("tfliteSupport", "Error reading or loading model: " + e.getMessage());
         }
-
-        // 获取标签文件的路径
-        String labelFilePath = ModelAndLabel.getInstance().getLabel();
 
         try {
-            File labelFileFile = new File(labelFilePath);
-            associatedAxisLabels = FileUtil.loadLabels(new FileInputStream(labelFileFile));
+            // 获取标签ByteBuffer
+            ByteBuffer labelBuffer = Yolov5TFLiteDetector.txtBuffer;
+            if (labelBuffer != null) {
+                byte[] labelBytes = new byte[labelBuffer.remaining()];
+                labelBuffer.get(labelBytes); // 将 ByteBuffer 中的数据读取到 byte 数组中
 
-            Log.i("tfliteSupport", "Success reading label: " + labelFilePath);
-        } catch (IOException e) {
+                associatedAxisLabels = FileUtil.loadLabels(new ByteArrayInputStream(labelBytes));
+                Log.i("tfliteSupport", "Success reading and loading labels");
+            } else {
+                Log.e("tfliteSupport", "Label ByteBuffer is null");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("tfliteSupport", "Error reading label: " + e.getMessage());
+            Log.e("tfliteSupport", "Error reading or loading labels: " + e.getMessage());
         }
-
     }
+
+
 
     /**
      * 检测步骤
@@ -791,6 +793,7 @@ public class Yolov5TFLiteDetector {
         // yolov5s-tflite的输出是:[1, 6300, 85], 可以从v5的GitHub release处找到相关tflite模型, 输出是[0,1], 处理到320.
         // 推理计算
         if (detectorPtr != 0) {
+            JNITools test = new JNITools();
             outputBuffer = test.detect(
                     detectorPtr,
                     byteBuffer.array(),

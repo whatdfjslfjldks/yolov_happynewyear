@@ -49,6 +49,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 //    private int generateRandomColor() {
 //        return Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
 //    }
-
     public static void updateCameraPreview(Context context){
         if (IS_FULL_SCREEN) {
             cameraPreviewWrap.removeAllViews();
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 //        initModel("yolov5s","coco_label.txt",INPNUT_SIZE,OUTPUT_SIZE);//位置？
         //打开用户本地文件按钮
         file_btn=findViewById(R.id.file_btn);
-        
+
         file_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -497,6 +497,22 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        private File writeByteBufferToFile(ByteBuffer byteBuffer, String outputDirectory, String fileName) {
+            File outputFile = new File(outputDirectory, fileName);
+            try {
+                FileOutputStream fos = new FileOutputStream(outputFile);
+                FileChannel fileChannel = fos.getChannel();
+                byteBuffer.position(0); // 重置 ByteBuffer 的位置
+                fileChannel.write(byteBuffer);
+                fileChannel.close();
+                fos.close();
+                return outputFile;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
         @Override
         protected void onPostExecute(Void result) {
 
@@ -508,68 +524,10 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     modelDirectory = new File(getApplicationContext().getExternalFilesDir(null) + "/yolo");
                 }
-
                 Log.e("TNT", "modelDirectory:" + modelDirectory);
 
 
                 ByteBuffer jsonBuffer = Yolov5TFLiteDetector.jsonBuffer;
-                ByteBuffer modelBuffer = Yolov5TFLiteDetector.modelBuffer;
-                ByteBuffer txtBuffer = Yolov5TFLiteDetector.txtBuffer;
-
-                // 创建临时文件
-                File txtTempFile = null;
-                try {
-                    txtTempFile = File.createTempFile("temp", null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try (FileChannel outChannel = new FileOutputStream(txtTempFile).getChannel()) {
-                    // 将ByteBuffer的数据写入临时文件
-                    outChannel.write(txtBuffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                String labelFilePath = txtTempFile.getAbsolutePath();
-                ModelAndLabel.getInstance().setLabel(labelFilePath);
-
-
-                // 创建临时文件
-                File modelTempFile = null;
-                try {
-                    modelTempFile = File.createTempFile("modelTemp", null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                try (FileChannel outChannel = new FileOutputStream(modelTempFile).getChannel()) {
-                    // 将ByteBuffer的数据写入临时文件
-                    outChannel.write(modelBuffer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String modelFilePath = modelTempFile.getAbsolutePath();
-                ModelAndLabel.getInstance().setModel(modelFilePath);
-
-
-
-
-
-//                modelBuffer.flip();
-//                CharBuffer modelCharBuffer = StandardCharsets.UTF_8.decode(modelBuffer);
-//
-//                txtBuffer.flip();
-//                CharBuffer txtCharBuffer = StandardCharsets.UTF_8.decode(txtBuffer);
-
-//                String modelString=modelCharBuffer.toString();
-//                String txtString=txtCharBuffer.toString();
-
-//                Log.e("yuandan",modelString);
-//                Log.e("yuandan",txtString);
-//路径
-//                ModelAndLabel.getInstance().setModel(modelString);
-//                ModelAndLabel.getInstance().setLabel(txtString);
 
                 // 将 ByteBuffer 转换为 CharBuffer
                 jsonBuffer.flip(); // 切换为读模式
